@@ -3,7 +3,6 @@
 use regex::Regex;
 use regex::RegexSet;
 use std::fs::read_to_string;
-use std::string;
 
 fn main() {
     let file_path = "./input/part_01.txt";
