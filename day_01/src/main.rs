@@ -84,6 +84,19 @@ fn part_2(input: &str) -> u32 {
     let re_eight = Regex::new(r"eight").unwrap();
     let re_nine = Regex::new(r"nine").unwrap();
 
+    let all_regexes = vec![
+        &re_numbers,
+        &re_one,
+        &re_two,
+        &re_three,
+        &re_four,
+        &re_five,
+        &re_six,
+        &re_seven,
+        &re_eight,
+        &re_nine,
+    ];
+
     let match_num = re_numbers.find(input);
     let match_one = re_one.find(input);
     let match_two = re_two.find(input);
@@ -114,28 +127,26 @@ fn part_2(input: &str) -> u32 {
     let mut low_value: String = "hello".to_string();
 
     for matchy in matches {
-        if matchy == 0 {
-            let numbers: Vec<_> = re_numbers.find_iter(input).collect();
-            for num in numbers {
-                if num.start() >= high {
+        let all_match: Vec<_> = all_regexes[matchy].find_iter(input).collect();
+        for num in all_match {
+            if num.start() >= high {
+                if matchy == 0 {
                     high = num.start();
                     high_value = num.as_str().to_string();
+                } else {
+                    high = num.start();
+                    high_value = matchy.to_string();
                 }
+            }
 
-                if num.start() <= low {
+            if num.start() <= low {
+                if matchy == 0 {
                     low = num.start();
                     low_value = num.as_str().to_string();
+                } else {
+                    low = all_matches[matchy].unwrap().start();
+                    low_value = matchy.to_string();
                 }
-            }
-        } else {
-            if all_matches[matchy].unwrap().start() >= high {
-                high = all_matches[matchy].unwrap().start();
-                high_value = matchy.to_string();
-            }
-
-            if all_matches[matchy].unwrap().start() <= low {
-                low = all_matches[matchy].unwrap().start();
-                low_value = matchy.to_string();
             }
         }
     }
