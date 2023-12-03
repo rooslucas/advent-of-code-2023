@@ -16,20 +16,18 @@ fn main() {
     //let content_list = contents.split('\n');
 
     let mut liness = Vec::new();
-    //let mut numbers = Vec::new();
+    let mut numbers = Vec::new();
 
     for line in read_to_string(file_path).unwrap().lines() {
         liness.push(line.to_string());
     }
 
-    // for line in &liness {
-    //     numbers.push(disect(&line));
-    // }
+    for line in &liness {
+        numbers.push(disect(&line));
+    }
 
-    // println!("{:?}", numbers);
-
-    // let sum: u32 = numbers.iter().sum();
-    // println!("the total sum is: {}", sum);
+    let sum: u32 = numbers.iter().sum();
+    println!("the total sum is: {}", sum);
 
     // Part 2
 
@@ -40,18 +38,13 @@ fn main() {
     }
 
     let sum2: u32 = all_numbers.iter().sum();
-    println!(
-        "the total sum is: {}, {}, {}",
-        sum2,
-        all_numbers.len(),
-        liness.len()
-    );
+    println!("the total sum is: {}", sum2,);
 }
 
 fn disect(instruction: &str) -> u32 {
     let mut splits: Vec<&str> = instruction.split(|c: char| c.is_alphabetic()).collect();
     splits.retain(|value| *value != "");
-    println!("{:?}", splits);
+    //println!("{:?}", splits);
     // println!("number one {}, and number two {}", splits[0], splits[splits.len() - 1]);
 
     let number_1 = splits[0].to_string() + splits[splits.len() - 1];
@@ -60,7 +53,7 @@ fn disect(instruction: &str) -> u32 {
         .iter()
         .flatten()
         .collect::<String>();
-    println!("{}", number_2);
+    // println!("{}", number_2);
     let number_final: u32 = number_2.trim().parse().expect("Split errorr");
 
     number_final
@@ -152,9 +145,5 @@ fn part_2(input: &str) -> u32 {
     }
 
     let number_1 = low_value.to_string() + &high_value;
-    println!("low {low_value}, high {high_value}");
-    println!("{}", number_1);
-    //let number_2 = [number_1.chars().next(), number_1.chars().last()].iter().flatten().collect::<String>();
-    // println!("{}", number_2);
     number_1.trim().parse().expect("Split errorr")
 }
