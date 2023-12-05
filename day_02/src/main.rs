@@ -71,8 +71,7 @@ fn check_true(red: u32, blue: u32, green: u32) -> bool {
 fn readgame_part2(input: &str) -> u32 {
     // split on :
     let double: Vec<&str> = input.split(":").collect();
-    let get_id: Vec<&str> = double[0].split(" ").collect();
-    let mut id: u32 = get_id[1].trim().parse().expect("Split errorr");
+
     // split on ;
     let point: Vec<&str> = double[1].split(";").collect();
 
