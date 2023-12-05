@@ -37,21 +37,31 @@ fn parse(matrix: &Vec<Vec<char>>) -> Vec<PartNumber> {
     let mut numb: String = "".to_string();
     let mut final_set = Vec::new();
 
-    for nee in 0..matrix.len() {
-        for char in 0..matrix[nee].len() {
-            if numbers.contains(&matrix[nee][char]) {
-                numb += &matrix[nee][char].to_string();
+    for y in 0..matrix.len() {
+        for x in 0..matrix[y].len() {
+            if numbers.contains(&matrix[y][x]) {
+                numb += &matrix[y][x].to_string();
             } else {
                 if numb != "" {
-                    //final_set.push(numb.trim().parse::<u32>().expect("Split errorr"));
-                    let parse_number = PartNumber {
-                        number: numb.parse::<u32>().expect("Split errorr"),
-                        y: nee,
-                        x1: char - numb.len(),
-                        x2: char - 1,
-                    };
+                    if x > 0 {
+                        //final_set.push(numb.trim().parse::<u32>().expect("Split errorr"));
+                        let parse_number = PartNumber {
+                            number: numb.parse::<u32>().expect("Split errorr"),
+                            y,
+                            x1: x - numb.len(),
+                            x2: x - 1,
+                        };
+                        final_set.push(parse_number);
+                    } else {
+                        let parse_number = PartNumber {
+                            number: numb.parse::<u32>().expect("Split errorr"),
+                            y,
+                            x1: matrix[y].len() - numb.len(),
+                            x2: matrix[y].len(),
+                        };
+                        final_set.push(parse_number);
+                    }
 
-                    final_set.push(parse_number);
                     numb = "".to_string();
                 }
             }
