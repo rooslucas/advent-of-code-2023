@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::fs::read_to_string;
 
 #[derive(Debug)]
@@ -28,6 +29,7 @@ fn parse1(input: &Vec<&str>) -> Vec<Race> {
     distances.retain(|value| *value != "");
 
     let parsed = (1..times.len())
+        .into_par_iter()
         .map(|i| Race {
             time: times[i].parse::<u64>().expect("Error error"),
             distance: distances[i].parse::<u64>().expect("Error error"),
@@ -59,9 +61,10 @@ fn parse2(input: Vec<&str>) -> Vec<Race> {
 
 fn find_winnings(input: Vec<Race>) -> u64 {
     input
-        .iter()
+        .par_iter()
         .map(|race| {
             (0..(race.time + 1))
+                .into_par_iter()
                 .filter(|sec| {
                     let dist = sec * (race.time - sec);
                     dist > race.distance
