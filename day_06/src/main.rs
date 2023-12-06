@@ -16,8 +16,8 @@ fn main() {
     let parsed = parse1(&liness);
     let race = parse2(liness);
 
-    println!("{}", part_1(parsed));
-    println!("{}", part_1(race));
+    println!("{}", find_winnings(parsed));
+    println!("{}", find_winnings(race));
 }
 
 fn parse1(input: &Vec<&str>) -> Vec<Race> {
@@ -57,7 +57,7 @@ fn parse2(input: Vec<&str>) -> Vec<Race> {
     vec![Race { time, distance }]
 }
 
-fn part_1(input: Vec<Race>) -> u64 {
+fn find_winnings(input: Vec<Race>) -> u64 {
     input
         .iter()
         .map(|race| {
@@ -70,5 +70,3 @@ fn part_1(input: Vec<Race>) -> u64 {
         })
         .product()
 }
-
-// fn part_2() {}
