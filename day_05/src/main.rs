@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::fs::read_to_string;
 use std::u64;
 
@@ -11,7 +12,7 @@ impl Range {
     fn range_check(&self, i: u64) -> u64 {
         let end_source = self.start_source + self.length;
 
-        if (self.start_source..end_source).contains(&i) {
+        if (i >= self.start_source) && (i < end_source) {
             let diff = i - self.start_source;
             return self.start_destination + diff;
         } else {
@@ -28,12 +29,11 @@ struct Map {
 
 impl Map {
     fn check_ranges(&self, value: u64) -> u64 {
-        let mut check_list = Vec::new();
-        for range in &self.ranges {
-            check_list.push(range.range_check(value));
-        }
+        let sum = (&self.ranges)
+            .iter()
+            .map(|range| range.range_check(value))
+            .sum();
 
-        let sum: u64 = check_list.iter().sum();
         if sum > 0 {
             return sum;
         } else {
@@ -52,7 +52,9 @@ fn main() {
     let parsed = parse(liness);
     // println!("{:#?}", parsed);
 
-    part_1(parsed.0, parsed.1)
+    part_1(&parsed.0, &parsed.1);
+
+    part_2(&parsed.0, &parsed.1);
 }
 
 fn parse(input: Vec<&str>) -> (Vec<&str>, Vec<Map>) {
@@ -90,23 +92,57 @@ fn parse(input: Vec<&str>) -> (Vec<&str>, Vec<Map>) {
     (seeds, maps)
 }
 
-fn part_1(seeds: Vec<&str>, maps: Vec<Map>) {
-    let mut locations = Vec::new();
+fn part_1(seeds: &Vec<&str>, maps: &Vec<Map>) {
+    let min = seeds
+        .iter()
+        .map(|seed| {
+            let mut current: u64;
+            let seed2 = seed.parse::<u64>().expect("Split errorr");
+            current = maps[0].check_ranges(seed2);
+            current = maps[1].check_ranges(current);
+            current = maps[2].check_ranges(current);
+            current = maps[3].check_ranges(current);
+            current = maps[4].check_ranges(current);
+            current = maps[5].check_ranges(current);
+            current = maps[6].check_ranges(current);
 
-    for seed in seeds {
-        let mut current: u64;
-        let seed2 = seed.parse::<u64>().expect("Split errorr");
-        current = maps[0].check_ranges(seed2);
-        current = maps[1].check_ranges(current);
-        current = maps[2].check_ranges(current);
-        current = maps[3].check_ranges(current);
-        current = maps[4].check_ranges(current);
-        current = maps[5].check_ranges(current);
-        current = maps[6].check_ranges(current);
+            current
+        })
+        .min()
+        .expect("lol where is the min");
 
-        println!("{current}");
-        locations.push(current);
-    }
-    locations.sort();
-    println!("{:?}", locations);
+    println!("{min}");
+}
+
+fn part_2(seeds: &Vec<&str>, maps: &Vec<Map>) {
+    let min = (0..seeds.len())
+        .step_by(2)
+        .collect::<Vec<_>>()
+        .par_iter()
+        .map(|index| {
+            let seed = seeds[*index].parse::<u64>().expect("Split errorr");
+            let length = seeds[index + 1].parse::<u64>().expect("Split errorr");
+
+            (seed..(seed + length))
+                .into_par_iter()
+                .map(|s| {
+                    let mut current: u64;
+                    let seed2 = s;
+                    current = maps[0].check_ranges(seed2);
+                    current = maps[1].check_ranges(current);
+                    current = maps[2].check_ranges(current);
+                    current = maps[3].check_ranges(current);
+                    current = maps[4].check_ranges(current);
+                    current = maps[5].check_ranges(current);
+                    current = maps[6].check_ranges(current);
+
+                    current
+                })
+                .min()
+                .expect("There should be a min")
+        })
+        .min()
+        .expect("There really should be a min dude");
+
+    println!("{min}");
 }
