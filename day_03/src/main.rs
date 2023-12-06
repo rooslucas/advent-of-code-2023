@@ -12,13 +12,11 @@ fn main() {
     let parsed_numbers = parse(&matrix);
     let pars = part_2(&matrix, &parsed_numbers);
 
-    // let set = part_1(matrix.clone());
+    let set = part_1(matrix.clone());
 
-    // let sum: u32 = set.iter().sum();
+    let sum: u32 = set.iter().sum();
 
-    // println!("total is {sum}");
-
-    // let set2 = part_2(matrix.clone());
+    println!("total is {sum}");
 
     let sum2: u32 = pars.iter().sum();
 
@@ -76,7 +74,6 @@ fn parse(matrix: &Vec<Vec<char>>) -> Vec<PartNumber> {
 
 fn part_1(matrix: Vec<Vec<char>>) -> Vec<u32> {
     let numbers = vec!['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    let mut numb: String = "".to_string();
     let mut final_set = Vec::new();
     let mut numb: String = "".to_string();
     let mut flag = false;
