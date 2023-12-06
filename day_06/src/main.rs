@@ -2,12 +2,12 @@ use std::fs::read_to_string;
 
 #[derive(Debug)]
 struct Race {
-    time: u32,
-    distance: u32,
+    time: u64,
+    distance: u64,
 }
 
 fn main() {
-    let file_path = "./input/test.txt";
+    let file_path = "./input/day_06.txt";
     println!("In file {}", file_path);
 
     let binding = read_to_string(file_path).unwrap();
@@ -16,7 +16,8 @@ fn main() {
     let parsed = parse1(&liness);
     let race = parse2(liness);
 
-    part_1(parsed);
+    println!("{}", part_1(parsed));
+    println!("{}", part_1(race));
 }
 
 fn parse1(input: &Vec<&str>) -> Vec<Race> {
@@ -28,48 +29,46 @@ fn parse1(input: &Vec<&str>) -> Vec<Race> {
 
     let parsed = (1..times.len())
         .map(|i| Race {
-            time: times[i].parse::<u32>().expect("Error error"),
-            distance: distances[i].parse::<u32>().expect("Error error"),
+            time: times[i].parse::<u64>().expect("Error error"),
+            distance: distances[i].parse::<u64>().expect("Error error"),
         })
         .collect();
 
     parsed
 }
 
-fn parse2(input: Vec<&str>) -> Race {
+fn parse2(input: Vec<&str>) -> Vec<Race> {
     let mut times: Vec<_> = input[0].split(" ").collect();
     times.retain(|value| *value != "");
-    let time = (times[1].to_string() + times[2] + times[3])
+    let time = (times[1].to_string() + times[2] + times[3] + times[4])
         .trim()
-        .parse::<u32>()
+        .parse::<u64>()
         .expect("Error error");
 
     let mut distances: Vec<_> = input[1].split(" ").collect();
     distances.retain(|value| *value != "");
-    let distance = (distances[1].to_string() + distances[2] + distances[3])
+    let distance = (distances[1].to_string() + distances[2] + distances[3] + distances[4])
         .trim()
-        .parse::<u32>()
+        .parse::<u64>()
         .expect("Error error");
 
     println!("{time}, {distance}");
 
-    Race { time, distance }
+    vec![Race { time, distance }]
 }
 
-fn part_1(input: Vec<Race>) {
-    let mut ways = Vec::new();
-    for race in input {
-        let mut way = 0;
-        for sec in 0..(race.time + 1) {
-            let dist = sec * (race.time - sec);
-            if dist > race.distance {
-                way += 1;
-            }
-        }
-        ways.push(way);
-    }
-
-    println!("{}", ways.iter().product::<u32>());
+fn part_1(input: Vec<Race>) -> u64 {
+    input
+        .iter()
+        .map(|race| {
+            (0..(race.time + 1))
+                .filter(|sec| {
+                    let dist = sec * (race.time - sec);
+                    dist > race.distance
+                })
+                .count() as u64
+        })
+        .product()
 }
 
 // fn part_2() {}
