@@ -2,7 +2,6 @@ use rayon::prelude::*;
 use std::fs::read_to_string;
 use std::u64;
 
-#[derive(Debug)]
 struct Range {
     start_destination: u64,
     start_source: u64,
@@ -21,7 +20,6 @@ impl Range {
     }
 }
 
-#[derive(Debug)]
 struct Map {
     name: String,
     ranges: Vec<Range>,
@@ -50,7 +48,6 @@ fn main() {
     let liness: Vec<_> = binding.lines().collect();
 
     let parsed = parse(liness);
-    // println!("{:#?}", parsed);
 
     part_1(&parsed.0, &parsed.1);
 
@@ -85,7 +82,6 @@ fn parse(input: Vec<&str>) -> (Vec<&str>, Vec<Map>) {
             ranges: ranges,
         };
 
-        // println!("{:#?}", new_map);
         maps.push(new_map);
     }
 
