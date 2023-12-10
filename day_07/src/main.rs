@@ -152,7 +152,7 @@ impl PartialEq for Hand {
 }
 
 fn main() {
-    let file_path = "./input/day_07.txt";
+    let file_path = "./input/day_7.txt";
     println!("In file {}", file_path);
 
     let binding = read_to_string(file_path).unwrap();
