@@ -10,9 +10,9 @@ struct Hand {
 }
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
 enum CardType {
+    J,
     N(u32),
     T,
-    J,
     Q,
     K,
     A,
@@ -42,7 +42,6 @@ impl Ord for Hand {
                     'A' => CardType::A,
                     'K' => CardType::K,
                     'Q' => CardType::Q,
-                    'J' => CardType::J,
                     'T' => CardType::T,
                     '9' => CardType::N(9),
                     '8' => CardType::N(8),
@@ -52,6 +51,7 @@ impl Ord for Hand {
                     '4' => CardType::N(4),
                     '3' => CardType::N(3),
                     '2' => CardType::N(2),
+                    'J' => CardType::J,
                     _ => panic!("AAAAAAA own"),
                 };
 
@@ -60,7 +60,6 @@ impl Ord for Hand {
                     'A' => CardType::A,
                     'K' => CardType::K,
                     'Q' => CardType::Q,
-                    'J' => CardType::J,
                     'T' => CardType::T,
                     '9' => CardType::N(9),
                     '8' => CardType::N(8),
@@ -70,6 +69,7 @@ impl Ord for Hand {
                     '4' => CardType::N(4),
                     '3' => CardType::N(3),
                     '2' => CardType::N(2),
+                    'J' => CardType::J,
                     _ => panic!("AAAAAAA other"),
                 };
 
@@ -107,9 +107,28 @@ impl Hand {
         self.division = numbs.clone();
 
         //println!("{:?}", numbs);
+        if self.cards.contains('J') {
+            let j_numbs = self.division[3];
+            println!("{j_numbs}");
+            if j_numbs != 5 {
+                self.division.remove(3);
+                println!("{:?}", self.division);
+
+                let max = &(self.division).iter().max().unwrap();
+                let index = &(self.division)
+                    .iter()
+                    .position(|element| &element == max)
+                    .unwrap();
+
+                self.division[*index] += j_numbs;
+            } else if j_numbs == 5 {
+                println!("{:#?}", self);
+            }
+        }
 
         if self.division.contains(&5) {
             self.label = Some(Win::Five);
+            println!("{:#?}", self);
         } else if self.division.contains(&4) {
             self.label = Some(Win::Four);
         } else if self.division.contains(&3) && self.division.contains(&2) {
@@ -165,7 +184,7 @@ fn parse(input: Vec<&str>) -> Vec<Hand> {
 fn part_1(mut input: Vec<Hand>) {
     for hand in 0..input.len() {
         input[hand].check_winning();
-        println!("{:#?}", input[hand]);
+        // println!("{:#?}", input[hand]);
     }
     input.sort();
 
