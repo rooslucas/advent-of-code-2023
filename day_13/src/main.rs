@@ -16,11 +16,11 @@ impl Pattern {
                     let mut right: Vec<_> = self.matrix[line + 1..].to_vec();
 
                     if left.len() > right.len() {
-                        for i in 0..(left.len() - right.len()) {
+                        for _i in 0..(left.len() - right.len()) {
                             left.remove(0);
                         }
                     } else if right.len() > left.len() {
-                        for i in 0..(right.len() - left.len()) {
+                        for _i in 0..(right.len() - left.len()) {
                             right.remove(right.len() - 1);
                         }
                     }
@@ -47,11 +47,11 @@ impl Pattern {
                     let mut down: Vec<_> = columns[line + 1..].to_vec();
 
                     if top.len() > down.len() {
-                        for i in 0..(top.len() - down.len()) {
+                        for _i in 0..(top.len() - down.len()) {
                             top.remove(0);
                         }
                     } else if down.len() > top.len() {
-                        for i in 0..(down.len() - top.len()) {
+                        for _i in 0..(down.len() - top.len()) {
                             down.remove(down.len() - 1);
                         }
                     }
@@ -88,7 +88,7 @@ fn main() {
 }
 
 fn parse(input: Vec<&str>) -> Vec<Pattern> {
-    let mut all: Vec<_> = input
+    let all: Vec<_> = input
         .split(|&e| e == "")
         .filter(|v| !v.is_empty())
         .collect();
