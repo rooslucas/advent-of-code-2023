@@ -1,4 +1,5 @@
 use array2d::Array2D;
+use rayon::prelude::*;
 use std::{char, fs::read_to_string};
 
 fn main() {
@@ -8,7 +9,15 @@ fn main() {
     let binding = read_to_string(file_path).unwrap();
     let liness: Vec<_> = binding.lines().collect();
     println!("{}", part_1(liness.clone()));
-    println!("{}", part_2(liness));
+
+    let mut mat: Vec<Vec<char>> = liness.iter().map(|x| x.chars().collect()).collect();
+    let mut i = 0;
+    while i < 1000000000 {
+        mat = part_2(mat);
+        i += 1;
+    }
+
+    println!("{}", calc_sum(mat));
 }
 
 fn part_1(input: Vec<&str>) -> usize {
@@ -31,11 +40,9 @@ fn part_1(input: Vec<&str>) -> usize {
     calc_sum(normal)
 }
 
-fn part_2(input: Vec<&str>) -> usize {
-    let mat: Vec<Vec<char>> = input.iter().map(|x| x.chars().collect()).collect();
-
+fn part_2(input: Vec<Vec<char>>) -> Vec<Vec<char>> {
     // Make it North
-    let array = Array2D::from_rows(&mat).unwrap();
+    let array = Array2D::from_rows(&input).unwrap();
     let mut north = array.as_columns();
 
     north = roll(north);
@@ -50,10 +57,6 @@ fn part_2(input: Vec<&str>) -> usize {
 
     let mut west = roll(normal);
 
-    for i in &west {
-        println!("{:?}", i);
-    }
-    println!("\n");
     west.reverse();
 
     // Make it South
@@ -70,10 +73,6 @@ fn part_2(input: Vec<&str>) -> usize {
         normal2.push(n_row);
     }
     normal2.reverse();
-    for i in &normal2 {
-        println!("{:?}", i);
-    }
-    println!("\n");
 
     let mut east: Vec<Vec<char>> = normal2
         .iter()
@@ -94,17 +93,12 @@ fn part_2(input: Vec<&str>) -> usize {
         })
         .collect();
 
-    for i in &east2 {
-        println!("{:?}", i);
-    }
-    println!("\n");
-    east.reverse();
-
-    calc_sum(east)
+    east2
 }
 
 fn calc_sum(normal: Vec<Vec<char>>) -> usize {
     let sum: usize = (0..normal.len())
+        .into_par_iter()
         .map(|x| {
             let v: Vec<_> = normal[x].iter().filter(|y| y == &&'O').collect();
             v.len() * (x + 1)
